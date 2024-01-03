@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-
+import json
+# from pydantic import BaseModel
 
 @ dataclass
 class raw_sweep:
@@ -8,19 +9,18 @@ class raw_sweep:
     ranges: list
 
 @ dataclass
-class PolarCoordinate:
-    dist: float
-    theta: float
-
-@ dataclass
 class EuclidianCoordinate:
     x: float
     y: float
 
 @ dataclass
-class ConvertedSweep:
+class Sweep:
+    sweep_nr: int
     points: list[EuclidianCoordinate]
 
 @ dataclass
-class Series:
-    sweeps: list[ConvertedSweep]
+class SweepSeries:
+    sweeps: list[Sweep]
+
+    def toJson(self):
+        return json.dumps(self, default=lambda o: o.__dict__)
