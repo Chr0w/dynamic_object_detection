@@ -20,16 +20,30 @@ def get_series(input_file_path):
     
 
     for sweep in series.sweeps:
-        y_pred = fclusterdata(sweep.all_points_array, 0.3, criterion='distance')
+        point_lables = fclusterdata(sweep.all_points_array, 0.3, criterion='distance')
 
         for i in range(0, len(sweep.all_points)):
-            label = y_pred[i]
-            sweep.all_points[i].label = label
+            sweep.all_points[i].label = point_lables[i]
 
+        sweep.blobs = get_blobs(sweep, point_lables)
 
-    # add_center_of_mass(series)
+        for b in sweep.blobs: 
+            b.center_of_mass = get_center_of_mass(b.points)
 
     return series
+
+
+def get_blobs(sweep, point_lables):
+
+    blob_list: list[Blob] = []
+    for i in range(0, max(point_lables)):
+        b = Blob(nr=i, points=[], center_of_mass=None, velocity_vector=None)
+        blob_list.append(b)
+
+    for p in sweep.all_points:
+        blob_list[(p.label)-1].points.append(p)
+
+    return blob_list
 
 
 def add_center_of_mass(series):
@@ -58,4 +72,4 @@ def get_center_of_mass(points):
         xpoints.append(p.x)
         ypoints.append(p.y)
     
-    return EuclidianCoordinate(x=statistics.mean(xpoints), y=statistics.mean(ypoints))
+    return EuclidianCoordinate(x=statistics.mean(xpoints), y=statistics.mean(ypoints), label=p.label)

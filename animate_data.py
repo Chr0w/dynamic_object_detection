@@ -29,6 +29,7 @@ for c in sweep.all_points:
     color_map.append(colors[c.label])
 
 all_scatter_plot = ax.scatter(xpoints, ypoints, s=10, c=color_map)
+com_scatter_plot = ax.scatter(0, 0, s=40, c=color_map)
 
 
 def update(frame):
@@ -44,6 +45,13 @@ def update(frame):
     data = np.stack([xpoints, ypoints]).T
     all_scatter_plot.set_offsets(data)
     all_scatter_plot.set_facecolor(color_map)
+
+    # x_com = []
+    # y_com = []
+    # for b in sweep.blobs:
+    #     x_com.append(b.center_of_mass.x)
+    #     y_com.append(b.center_of_mass.y)
+        
 
     print(sweep.sec)
 
