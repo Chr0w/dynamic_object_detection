@@ -23,17 +23,16 @@ def get_series(input_file_path):
         point_lables = fclusterdata(sweep.all_points_array, 0.3, criterion='distance')
 
         for i in range(0, len(sweep.all_points)):
-            sweep.all_points[i].label = point_lables[i]
+            sweep.all_points[i].label = point_lables[i]-1
 
         sweep.blobs = get_blobs(sweep, point_lables)
 
-        print(f"Number of blobs in sweep: {len(sweep.blobs)}")
+        # print(f"Number of blobs in sweep: {len(sweep.blobs)}")
 
         for b in sweep.blobs: 
             b.center_of_mass = get_center_of_mass(b.points)
-            print(f"blob {b.nr} CoM: {b.center_of_mass}")
+            # print(f"blob {b.nr} CoM: {b.center_of_mass}")
 
-    exit()
     return series
 
 
@@ -45,7 +44,7 @@ def get_blobs(sweep, point_lables):
         blob_list.append(b)
 
     for p in sweep.all_points:
-        blob_list[(p.label)-1].points.append(p)
+        blob_list[(p.label)].points.append(p)
 
     return blob_list
 

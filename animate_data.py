@@ -23,13 +23,15 @@ for p in sweep.all_points:
 
 fig, ax = plt.subplots()
 
+quiver = ax.quiver([],[],[],[])
+
 colors = ['blue', 'gold', 'chocolate', 'forestgreen', 'khaki', 'red', 'brown', 'cyan', 'firebrick',  'tomato', 'saddlebrown', 'peachpuff',  'yellow',   'lime', 'turquoise', 'blueviolet', 'violet', 'purple']
 color_map = []
 for c in sweep.all_points:
     color_map.append(colors[c.label])
 
 all_scatter_plot = ax.scatter(xpoints, ypoints, s=10, c=color_map)
-com_scatter_plot = ax.scatter(0, 0, s=40, c=color_map)
+com_scatter_plot = ax.scatter(0, 0, s=40)
 
 
 def update(frame):
@@ -42,20 +44,32 @@ def update(frame):
     for p in sweep.all_points:
         xpoints.append(p.x)
         ypoints.append(p.y)
-    data = np.stack([xpoints, ypoints]).T
-    all_scatter_plot.set_offsets(data)
+    point_data = np.stack([xpoints, ypoints]).T
+    all_scatter_plot.set_offsets(point_data)
     all_scatter_plot.set_facecolor(color_map)
 
-    # x_com = []
-    # y_com = []
-    # for b in sweep.blobs:
-    #     x_com.append(b.center_of_mass.x)
-    #     y_com.append(b.center_of_mass.y)
+    x_com = []
+    y_com = []
+    com_color_map = []
+    for b in sweep.blobs:
+        x_com.append(b.center_of_mass.x)
+        y_com.append(b.center_of_mass.y)
+        com_color_map.append(colors[b.center_of_mass.label])
+
+    com_data = np.stack([x_com, y_com]).T
+    com_scatter_plot.set_offsets(com_data)
+    com_scatter_plot.set_facecolor(com_color_map)
+
+    global quiver
+    quiver.remove()
+
+    quiver = ax.quiver([x_com], [y_com], [x_com],[y_com], color=colors[b.center_of_mass.label])
+
         
 
     print(sweep.sec)
 
-    return all_scatter_plot
+    return all_scatter_plot, com_scatter_plot
 
 time_between_frames_ms = 50
 
