@@ -3,7 +3,7 @@ import math
 import jsonpickle
 import re
 from data_types import *
-
+import numpy as np
 
 def get_front_scan_ranges(input_file):
 
@@ -50,14 +50,17 @@ def get_series_from_scan(data):
     series = SweepSeries(sweeps=[])
     sweep_count = 0
     for s in data:
-        sweep = Sweep(sweep_nr=sweep_count, all_points=[], blobs = [], sec = 0)
+        sweep = Sweep(sweep_nr=sweep_count, all_points=[], blobs = [], sec = 0, all_points_array=[])
         sweep.sweep_nr = sweep_count
         for i in range(0, len(s.ranges)):
             angle = angle_min + (angle_increment * i) + ANGLE_OFFSET
             dist = float(s.ranges[i])
             if dist < 8 and dist > 0.1:
-                p = EuclidianCoordinate(x=math.cos(angle)*dist+X_OFFSET, y=math.sin(angle)*dist+Y_OFFSET)
+                p = EuclidianCoordinate(x=math.cos(angle)*dist+X_OFFSET, y=math.sin(angle)*dist+Y_OFFSET, label=0)
                 sweep.all_points.append(p)
+                xy_array = [p.x, p.y]
+                sweep.all_points_array.append(xy_array)
+
 
         sweep.sec = s.sec
         series.sweeps.append(sweep)

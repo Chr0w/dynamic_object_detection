@@ -23,13 +23,19 @@ for p in sweep.all_points:
 
 fig, ax = plt.subplots()
 
-all_scatter_plot = ax.scatter(xpoints, ypoints, s=10)
+colors = ['blue', 'gold', 'chocolate', 'forestgreen', 'khaki', 'red', 'brown', 'cyan', 'firebrick',  'tomato', 'saddlebrown', 'peachpuff',  'yellow',   'lime', 'turquoise', 'blueviolet', 'violet', 'purple']
+color_map = []
+for c in sweep.all_points:
+    color_map.append(colors[c.label])
 
-# Center of Mass
-com_scatter_plot = ax.scatter(xpoints, ypoints, s=1)
+all_scatter_plot = ax.scatter(xpoints, ypoints, s=10, c=color_map)
+
 
 def update(frame):
     sweep = series.sweeps[frame]
+    color_map = []
+    for c in sweep.all_points:
+        color_map.append(colors[c.label])
     xpoints = []
     ypoints = []
     for p in sweep.all_points:
@@ -37,11 +43,11 @@ def update(frame):
         ypoints.append(p.y)
     data = np.stack([xpoints, ypoints]).T
     all_scatter_plot.set_offsets(data)
-    com_scatter_plot.set_offsets(data)
+    all_scatter_plot.set_facecolor(color_map)
 
     print(sweep.sec)
 
-    return all_scatter_plot, com_scatter_plot
+    return all_scatter_plot
 
 time_between_frames_ms = 50
 
