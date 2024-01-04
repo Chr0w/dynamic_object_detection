@@ -63,7 +63,7 @@ def update(frame):
     global quiver
     quiver.remove()
 
-    quiver = ax.quiver([x_com], [y_com], [x_com],[y_com], color=colors[b.center_of_mass.label])
+    quiver = ax.quiver([x_com], [y_com], [x_com],[y_com], color=colors)
 
         
 
