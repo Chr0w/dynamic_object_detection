@@ -4,8 +4,7 @@ import json
 
 @ dataclass
 class raw_sweep:
-    sec: int
-    nsec: int
+    sec: float
     ranges: list
 
 @ dataclass
@@ -25,6 +24,7 @@ class Sweep:
     sweep_nr: int
     all_points: list[EuclidianCoordinate]
     blobs: list[Blob]
+    sec: float
 
 
 @dataclass

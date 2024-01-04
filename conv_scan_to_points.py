@@ -1,29 +1,40 @@
 import sys
 import math
 import jsonpickle
+import re
 from data_types import *
 
 
 def get_front_scan_ranges(input_file):
+
+    start_seconds_offset = None
 
     all_ranges = []
     front_scanner = False
     for line in input_file:
         if "front_laser_link" in line:
             front_scanner = True
+            continue
+
         elif "back_laser_link" in line:
             front_scanner = False  
+            continue
+
+        elif "nsecs" in line:
+            time_stamp_nanoseconds = float(re.findall(r'\d+',line)[0])*pow(10,-9)
+            continue
 
         if "secs" in line:
-            time_stamp_seconds = [int(i) for i in line.split() if i.isdigit()]        
-
-        if "nsecs" in line:
-            time_stamp_nanoseconds = [int(i) for i in line.split() if i.isdigit()]
+            time_stamp_seconds = float(re.findall(r'\d+',line)[0])
+            if not start_seconds_offset:
+                start_seconds_offset = time_stamp_seconds
+            continue
 
         if front_scanner and "ranges" in line:
             ranges_as_string = line[9:len(line)-2]
             ranges_as_list = list(ranges_as_string.split(", "))
-            all_ranges.append(raw_sweep(ranges=ranges_as_list, sec= time_stamp_seconds[0], nsec=time_stamp_nanoseconds[0]))
+
+            all_ranges.append(raw_sweep(ranges=ranges_as_list, sec= (time_stamp_seconds-start_seconds_offset)+time_stamp_nanoseconds))
 
     return all_ranges
 
@@ -39,15 +50,16 @@ def get_series_from_scan(data):
     series = SweepSeries(sweeps=[])
     sweep_count = 0
     for s in data:
-        sweep = Sweep(sweep_nr=sweep_count, points=[])
+        sweep = Sweep(sweep_nr=sweep_count, all_points=[], blobs = [], sec = 0)
         sweep.sweep_nr = sweep_count
         for i in range(0, len(s.ranges)):
             angle = angle_min + (angle_increment * i) + ANGLE_OFFSET
             dist = float(s.ranges[i])
             if dist < 8 and dist > 0.1:
                 p = EuclidianCoordinate(x=math.cos(angle)*dist+X_OFFSET, y=math.sin(angle)*dist+Y_OFFSET)
-                sweep.points.append(p)
+                sweep.all_points.append(p)
 
+        sweep.sec = s.sec
         series.sweeps.append(sweep)
         sweep_count += 1
 

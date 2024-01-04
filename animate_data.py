@@ -17,30 +17,33 @@ sweep = series.sweeps[0]
 xpoints = []
 ypoints = []
 
-for p in sweep.points:
+for p in sweep.all_points:
     xpoints.append(p.x)
     ypoints.append(p.y)
-    print(p)
 
 fig, ax = plt.subplots()
 
 all_scatter_plot = ax.scatter(xpoints, ypoints, s=10)
+
+# Center of Mass
 com_scatter_plot = ax.scatter(xpoints, ypoints, s=1)
 
 def update(frame):
     sweep = series.sweeps[frame]
     xpoints = []
     ypoints = []
-    for p in sweep.points:
+    for p in sweep.all_points:
         xpoints.append(p.x)
         ypoints.append(p.y)
     data = np.stack([xpoints, ypoints]).T
     all_scatter_plot.set_offsets(data)
     com_scatter_plot.set_offsets(data)
 
+    print(sweep.sec)
+
     return all_scatter_plot, com_scatter_plot
 
-time_between_frames_ms = 40
+time_between_frames_ms = 50
 
 ani = animation.FuncAnimation(fig=fig, func=update, frames=no_frames, interval=time_between_frames_ms)
 plt.show()

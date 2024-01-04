@@ -1,5 +1,4 @@
-from dataclasses import dataclass
-from data_types import EuclidianCoordinate, SweepSeries
+from data_types import EuclidianCoordinate
 import jsonpickle
 from munch import DefaultMunch
 import statistics
