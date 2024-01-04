@@ -17,14 +17,17 @@ def get_series(input_file_path):
     data = jsonpickle.decode(converted_data)
 
     series: SweepSeries = DefaultMunch.fromDict(data)
+    
 
     for sweep in series.sweeps:
         y_pred = fclusterdata(sweep.all_points_array, 0.3, criterion='distance')
-        
-        for i in range(0, len(sweep.all_points)):
-            sweep.all_points[i].label = y_pred[i]
 
-    add_center_of_mass(series)
+        for i in range(0, len(sweep.all_points)):
+            label = y_pred[i]
+            sweep.all_points[i].label = label
+
+
+    # add_center_of_mass(series)
 
     return series
 
