@@ -27,9 +27,13 @@ def get_series(input_file_path):
 
         sweep.blobs = get_blobs(sweep, point_lables)
 
+        print(f"Number of blobs in sweep: {len(sweep.blobs)}")
+
         for b in sweep.blobs: 
             b.center_of_mass = get_center_of_mass(b.points)
+            print(f"blob {b.nr} CoM: {b.center_of_mass}")
 
+    exit()
     return series
 
 
