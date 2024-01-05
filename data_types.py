@@ -19,6 +19,7 @@ class Blob:
     points: list[EuclidianCoordinate]
     center_of_mass: EuclidianCoordinate
     velocity_vector: tuple
+    velocity_vector_smooth: tuple
 
 
 @dataclass

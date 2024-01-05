@@ -63,7 +63,24 @@ def update(frame):
     global quiver
     quiver.remove()
 
-    quiver = ax.quiver([x_com], [y_com], [x_com],[y_com], color=colors)
+    vectors_x = []
+    vectors_y = []
+
+    VISUAL_SCALE_FACTOR = 1
+
+    for v in sweep.blobs:
+        if v.velocity_vector:
+            if v.velocity_vector[0] > 2 and v.velocity_vector[1] > 2:
+                vectors_x.append(0)
+                vectors_y.append(0) 
+            else:
+                vectors_x.append(v.velocity_vector[0]*VISUAL_SCALE_FACTOR)
+                vectors_y.append(v.velocity_vector[1]*VISUAL_SCALE_FACTOR)                                 
+        else:
+            vectors_x.append(0)
+            vectors_y.append(0)            
+
+    quiver = ax.quiver([x_com], [y_com], [vectors_x], [vectors_y])
 
         
 
@@ -71,7 +88,7 @@ def update(frame):
 
     return all_scatter_plot, com_scatter_plot
 
-time_between_frames_ms = 50
+time_between_frames_ms = 80
 
 ani = animation.FuncAnimation(fig=fig, func=update, frames=no_frames, interval=time_between_frames_ms)
 plt.show()
